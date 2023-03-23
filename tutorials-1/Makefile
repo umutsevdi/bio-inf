@@ -23,6 +23,7 @@ obj/%.o: src/%.cpp
 	g++ $(CXXFLAGS) -c $< -o $@  -Iinc
 
 clean:
+	@sed -i "s/#define EXAMPLE_./#define EXAMPLE_1/" src/main.cpp
 	rm -f $(OBJ) $(BIN)
 
 # Example:

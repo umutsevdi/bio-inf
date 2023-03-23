@@ -11,7 +11,7 @@
 #include <iostream>
 #include <string>
 
-#define EXAMPLE_2
+#define EXAMPLE_1
 
 void read_seq(std::string &s) {
   /* std::string s = "    TCAT AATA CGTT TTGT ATTC GCCA GCGC TTCG GTGT
