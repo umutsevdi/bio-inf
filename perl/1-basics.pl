@@ -1,5 +1,6 @@
-#!/usr/bin/perl -w
+#!/usr/bin/perl
 
+use strict;
 use warnings;
 #******************************************************************************
 #
@@ -24,7 +25,7 @@ print "This piece of text wont place new line at the end. ";
 print "Hello World\n";
 
 # Assign a variable using $ sign 
-$x = 20;
+my $x = 20;
 if ($x>20) {
     print "greater\n";
 } elsif ($x < 20) {
@@ -35,11 +36,11 @@ if ($x>20) {
 
 # This section of perl makes some sense. It works like a normal language.
 
-$v1 = 7;
-$v2 = 3;
+my $v1 = 7;
+my $v2 = 3;
 
 # Classic for loop example
-for ($i=0; $i<$v1; $i++) {
+for (my $i=0; $i<$v1; $i++) {
     print "$i ";
 }
 print "\n";
@@ -66,15 +67,16 @@ print "$v1 || $v2 = ", $v1 || $v2, "\n";
 # In Perl arrays start with a cool @ symbol. We can access values using [].
 # Using the array as itself return it's length.
 print "Array\n";
-@number = (40, 55, 63, 17, 22, 68, 89, 97, 89);
+my @number = (40, 55, 63, 17, 22, 68, 89, 97, 89);
 
-foreach $i (@number) {
+foreach my $i (@number) {
     print "$i ";
 }
 print "\n";
 
 # Hashmaps don't have a cool symbol. But the way you access them is weird af.
 # Because Perl can never be normal.
+my %Fruit;
 $Fruit{'Mango'} = 10; 
 $Fruit{'Apple'} = 20; 
 $Fruit{'Strawberry'} = 30; 
@@ -87,7 +89,7 @@ print "$Fruit{'Strawberry'}\n";
   
 # Perl also have a more weird Initialization syntax when it comes to 
 # initialization. Initializing is done on Hash using '=>'
-%Fruit2 = ('Mango' => 45, 'Apple' => 42, 'Strawberry' => 35);
+my %Fruit2 = ('Mango' => 45, 'Apple' => 42, 'Strawberry' => 35);
   
 print "\nPrinting values of Hash:\n";
 print "$Fruit2{'Mango'}\n";

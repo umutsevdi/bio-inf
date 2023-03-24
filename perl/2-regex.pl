@@ -1,5 +1,6 @@
-#!/usr/bin/perl -w
+#!/usr/bin/perl
 
+use strict;
 use warnings;
 #******************************************************************************
 #
@@ -13,14 +14,14 @@ use warnings;
 
 # In perl there is a built in regex operator. ~=
 # Then you can do all the regex shenanigans.
-$a = "LookAt this text";
+my $a = "LookAt this text";
 if ($a =~ m/oo/) {
     print "Match Found\n";
 } else {
     print "Match Not Found\n";
 }
 
-$b = "How many e in this text? eee";
+my $b = "How many e in this text? eee";
 # Exactly 3 times
 if ($b =~ m/e{3}/) {
     print "Exactly 3 times\n";
@@ -66,9 +67,9 @@ if ($b =~ m/e*e/) {
 }
 
 # g must exist then at least one o letter followed by an optional g
-$c = "go gooo gone begun begone";
-$j=0;
-foreach $i (split(' ',$c)) {
+my $c = "go gooo gone begun begone";
+my $j=0;
+foreach my $i (split(' ',$c)) {
     if ($i =~ m/go+g?/) {
         print "+ ";
         $j+=1;
@@ -93,8 +94,8 @@ print $c, ":", $j, "\n";
 # le       | <=
 
 
-$v1 = "Hello World";
-$v2 = "Hello Everyone";
+my $v1 = "Hello World";
+my $v2 = "Hello Everyone";
 
 print "Logic Operators\n";
 print "$v1 eq $v2 = ", $v1 eq $v2, "\n";
