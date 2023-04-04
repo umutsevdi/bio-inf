@@ -12,13 +12,13 @@
 namespace process_utils {
 
 std::string erase_space(const std::string &str) {
-  std::string result;
-  for (char c : str) {
-    if (!std::isspace(static_cast<unsigned char>(c))) {
-      result += c;
+  char arr[str.length()];
+  for (unsigned long i = 0, j = 0; i < str.length(); i++) {
+    if (!std::isspace(static_cast<unsigned char>(str[i]))) {
+      arr[j++] = str[i];
     }
   }
-  return result;
+  return std::string(arr);
 }
 
 std::string &transcribe_dna(std::string &str) {
