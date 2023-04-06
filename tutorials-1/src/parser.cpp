@@ -1,4 +1,6 @@
 #include "parser.hpp"
+inline bool is_space(char x) { return (x == ' ' || x == '\t' || x == '\n'); }
+inline bool is_quote(char x) { return (x == '"' || x == '\''); }
 
 namespace parser {
 inline std::string read_tag(std::string &s) {
@@ -15,13 +17,23 @@ void remove_quotes(std::string &str) {
 }
 
 void trim(std::string &str) {
-  bool is_quote = false;
-  for (size_t i = 0; i < str.length(); i++) {
+  bool quote = false;
+  int j = 0;
+  for (char &s : str) {
+    if (is_quote(s)) {
+      quote = !quote;
+    }
+    if ((!quote && !is_space(s)) || quote) {
+      str[j++] = s;
+    }
   }
-  //TODO complete trim function
+  // resize only if any trimming is applied
+  if (j < str.length()) {
+    str.resize(j);
+  }
 }
 
-void map_args(std::string &s, std::vector<Pair> &v) {
+void map_args(std::string &s, std::vector<parser::Pair> &v) {
   size_t pos = 0;
   while (pos < s.length()) {
     // find the next key-value pair
@@ -38,19 +50,20 @@ void map_args(std::string &s, std::vector<Pair> &v) {
     size_t value_end = s.find('"', value_start);
     std::string key = s.substr(key_start, key_end - key_start + 1);
     std::string value = s.substr(value_start, value_end - value_start);
-    remove_quotes(key);
-    remove_quotes(value);
-    Pair p = {key, value};
+    parser::remove_quotes(key);
+    parser::remove_quotes(value);
+    parser::Pair p = {key, value};
     v.push_back(p);
     pos = value_end + 1;
   }
 }
-Tree &parse_tree(Tree &t, std::vector<std::string> &s, int i = 0) {
+parser::Tree &parse_tree(parser::Tree &t, std::vector<std::string> &s,
+                         size_t i) {
   if (i >= s.size()) {
     return t;
   }
-  std::string f = read_tag(s[i]);
-  int f_end = 0;
+  std::string f = parser::read_tag(s[i]);
+  size_t f_end = 0;
   // end tag
   while (f[f_end++] != ' ' && f_end < f.length())
     ;
@@ -59,7 +72,7 @@ Tree &parse_tree(Tree &t, std::vector<std::string> &s, int i = 0) {
     return t;
   }
   t.tag = f.substr(0, f_end);
-  map_args(f, t.data);
+  parser::map_args(f, t.data);
   return t;
   // TODO fix parse_tree recursive traversal
 }

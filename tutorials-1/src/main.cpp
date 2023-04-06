@@ -115,12 +115,18 @@ int main(int argc, char *argv[]) {
 int main() {
   std::string s = "key=\"value\"   another-key      = \"another-value\"   a = "
                   "\"b\" one-key                             =                 "
-                  "             \"value with space\"";
+                  "             \"value with space\"  key-with-single-quotes = \'QUOTED_VALUE WITH SPACE\'";
 
+  std::cout << s << std::endl;
+  parser::trim(s);
+  std::cout << s << std::endl;
+
+  /*
   std::vector<Pair> v;
   parser::map_args(s, v);
   for (parser::Pair p : v) {
     std::cout << p.key << ", " << p.value << std::endl;
   }
+  */
 }
 #endif
