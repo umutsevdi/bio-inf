@@ -113,20 +113,33 @@ int main(int argc, char *argv[]) {
  */
 #ifdef EXAMPLE_5
 int main() {
-  std::string s = "key=\"value\"   another-key      = \"another-value\"   a = "
-                  "\"b\" one-key                             =                 "
-                  "             \"value with space\"  key-with-single-quotes = \'QUOTED_VALUE WITH SPACE\'";
-
-  std::cout << s << std::endl;
-  parser::trim(s);
-  std::cout << s << std::endl;
-
-  /*
-  std::vector<Pair> v;
-  parser::map_args(s, v);
-  for (parser::Pair p : v) {
-    std::cout << p.key << ", " << p.value << std::endl;
+  /*  std::string s = "key=\"value\"   another-key      = \"another-value\"   a
+     = "
+                    "\"b\" one-key                             = " " \"value
+     with space\"  key-with-single-quotes = "
+                    "\'QUOTED_VALUE WITH SPACE\'";
+                    */
+  std::string total;
+  std::string data;
+  int line;
+  int queries;
+  std::cin >> line;
+  std::cin >> queries;
+  std::vector<std::string> v(line);
+  int i = 0;
+  while (i < line) {
+    std::getline(std::cin, data);
+    if (!data.empty())
+      v[i++] = data;
   }
-  */
+  for (int i = 0; i < v.size(); i++) {
+    std::cout << i << v[i] << std::endl;
+  }
+  parser::Tree t;
+  parser::Tree &t_ref = t;
+  parser::parse_tree(t_ref, v);
+
+  return 0;
 }
+
 #endif

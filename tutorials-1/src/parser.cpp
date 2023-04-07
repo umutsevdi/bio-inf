@@ -12,13 +12,9 @@ inline std::string read_tag(std::string &s) {
   return "";
 }
 
-void remove_quotes(std::string &str) {
-  str.erase(std::remove(str.begin(), str.end(), '"'), str.end());
-}
-
 void trim(std::string &str) {
   bool quote = false;
-  int j = 0;
+  size_t j = 0;
   for (char &s : str) {
     if (is_quote(s)) {
       quote = !quote;
@@ -33,47 +29,74 @@ void trim(std::string &str) {
   }
 }
 
-void map_args(std::string &s, std::vector<parser::Pair> &v) {
+/**
+ * parse_pairs - parses given line of string into a vector of key value
+ * pairs. Value can be either inside single quote or double quotes.
+ */
+std::vector<Pair> parse_pairs(const std::string &input) {
+  std::vector<Pair> result;
   size_t pos = 0;
-  while (pos < s.length()) {
-    // find the next key-value pair
-    size_t eq_pos = s.find('=', pos);
+  while (pos < input.length()) {
+    size_t eq_pos = input.find('=', pos);
     if (eq_pos == std::string::npos) {
-      break;
+      break; // No more pairs found
     }
-    size_t key_start = s.rfind(' ', eq_pos) + 1;
-    size_t key_end = eq_pos - 1;
-    while (key_end > key_start && s[key_end] == ' ') {
-      key_end--;
+
+    std::string key = input.substr(pos, eq_pos - pos);
+
+    // Find the next quote character
+    size_t quote_pos = input.find_first_of("'\"", eq_pos + 1);
+    if (quote_pos == std::string::npos) {
+      break; // Error: no quote found after '='
     }
-    size_t value_start = s.find('"', eq_pos) + 1;
-    size_t value_end = s.find('"', value_start);
-    std::string key = s.substr(key_start, key_end - key_start + 1);
-    std::string value = s.substr(value_start, value_end - value_start);
-    parser::remove_quotes(key);
-    parser::remove_quotes(value);
-    parser::Pair p = {key, value};
-    v.push_back(p);
-    pos = value_end + 1;
+
+    char quote = input[quote_pos];
+    std::string::size_type end_pos = input.find(quote, quote_pos + 1);
+    if (end_pos == std::string::npos) {
+      break; // Error: no closing quote found
+    }
+    std::string value = input.substr(quote_pos + 1, end_pos - quote_pos - 1);
+
+    result.push_back(Pair{key, value});
+    pos = end_pos + 1;
   }
+  return result;
 }
-parser::Tree &parse_tree(parser::Tree &t, std::vector<std::string> &s,
-                         size_t i) {
-  if (i >= s.size()) {
-    return t;
+
+std::vector<Pair> map_args(std::string &input) {
+  parser::trim(input);
+  std::vector<Pair> pair = parser::parse_pairs(input);
+  for (Pair p : pair) {
+    std::cout << "{" << p.key << ", " << p.value << "}\n";
   }
-  std::string f = parser::read_tag(s[i]);
+  return pair;
+}
+
+parser::Tree *parse_tree(parser::Tree &t, std::vector<std::string> &v,
+                         size_t i) {
+  if (i >= v.size()) {
+    return &t;
+  }
+  std::string f = parser::read_tag(v[i]);
   size_t f_end = 0;
   // end tag
   while (f[f_end++] != ' ' && f_end < f.length())
     ;
 
   if (!t.tag.empty() && t.tag == f) {
-    return t;
+    return &t;
   }
   t.tag = f.substr(0, f_end);
-  parser::map_args(f, t.data);
-  return t;
-  // TODO fix parse_tree recursive traversal
+  t.data = parser::map_args(f);
+
+  for (parser::Pair p : t.data) {
+    std::cout << t.tag << " " << p.key << ":" << p.value << std::endl;
+  }
+
+  Tree *child_tree = parse_tree(t, v);
+  if (child_tree != nullptr) {
+    t.children.push_back(*child_tree);
+  }
+  return &t;
 }
 }; // namespace parser
